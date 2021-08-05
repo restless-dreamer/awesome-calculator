@@ -1,0 +1,607 @@
+#:import StandardLayout calculator.standard_widgets.standard_layout
+#:import ExtensionLayout calculator.special_widgets.extension_layout
+#:import ScrollEffect kivy.effects.scroll.ScrollEffect
+#:import open webbrowser.open
+
+<StandardButton@Button>:
+    size_hint: (None, None)
+    size: (dp(24), dp(24))
+    border: [0, 0, 0, 0]
+
+<StandardLabel@Label>:
+    font_name: 'fonts/nunito_regular.ttf'
+
+<CalculatorButton@Button>:
+    border: [0, 0, 0, 0]
+    font_name: 'fonts/nunito_regular.ttf'
+    background_disabled_down: self.background_disabled_normal
+    on_release: app.calculator_button_press(self.text, self.group)
+
+<StandardScrollView@ScrollView>:
+    do_scroll_x: False
+    do_scroll_y: True
+    effect_cls: ScrollEffect
+    scroll_type: ['bars', 'content']
+    scroll_wheel_distance: 40
+    smooth_scroll_end: 10
+    bar_color: [1, 1, 1, 1]
+    bar_inactive_color: [1, 1, 1, 0]
+    bar_width: dp(2)
+
+<CalculatorScreen>:
+    name: 'calculator_screen'
+    StandardLayout:
+        id: color_layout
+        canvas.before:
+            Rectangle:
+                size: self.size
+                pos: self.pos
+                source: self.color
+    BoxLayout:
+        orientation: 'vertical'
+        RelativeLayout:
+            id: display
+            size_hint: (1, 0.6)
+            StandardButton:
+                pos: (display.width - dp(68), display.height - dp(34))
+                icon_used: 'america'
+                on_release: root.manager.current = 'language_screen'
+            StandardButton:
+                pos: (display.width - dp(34), display.height - dp(34))
+                icon_used: 'fill_color'
+                on_release: root.manager.current = 'theme_screen'
+            StandardLabel:
+                id: expression_label
+                font_size: sp(30)
+                markup: True
+            StandardScrollView:
+                id: output_scroll_view
+                do_scroll_x: True
+                do_scroll_y: False
+                scroll_x: 0
+                size_hint: (None, None)
+                height: dp(44)
+                RelativeLayout:
+                    id: output_layout
+                    size_hint: (None, 1)
+                    width: output_label.width + dp(20)
+                    StandardLabel:
+                        id: output_label
+                        font_size: sp(26)
+                        size_hint: (None, 1)
+                        size: self.texture_size
+                        markup: True
+                        right: dp(10)
+            StandardButton:
+                id: push_button
+                width: 0
+                pos: (display.width - dp(68), dp(10))
+                icon_used: 'up'
+                on_release: app.push_result_text_back_to_expression()
+            StandardButton:
+                id: copy_button
+                width: 0
+                pos: (display.width - dp(34), dp(10))
+                icon_used: 'copy'
+                on_release: app.copy_current_output_to_clipboard()
+            StandardLayout:
+                id: output_cover_layout
+                size_hint: (None, None)
+                size: (dp(10), dp(42))
+                top: dp(44)
+                canvas.before:
+                    Rectangle:
+                        size: self.size
+                        pos: self.pos
+                        source: self.color
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint: (1, 1)
+            ExtensionLayout:
+                id: extended_calculator_buttons_layout
+                size_hint: (0, 1)
+                width: 0
+                cols: 5
+                CalculatorButton:
+                    id: rad_button
+                    text: 'rad'
+                    group: 7
+                CalculatorButton:
+                    id: sin_button
+                    text: 'sin'
+                    group: 7
+                CalculatorButton:
+                    id: cos_button
+                    text: 'cos'
+                    group: 7
+                CalculatorButton:
+                    id: tan_button
+                    text: 'tan'
+                    group: 7
+                CalculatorButton:
+                    id: factorial_button
+                    text: '!'
+                    group: 2
+                CalculatorButton:
+                    id: deg_button
+                    text: 'deg'
+                    group: 7
+                CalculatorButton:
+                    id: sinh_button
+                    text: 'sinh'
+                    group: 7
+                CalculatorButton:
+                    id: cosh_button
+                    text: 'cosh'
+                    group: 7
+                CalculatorButton:
+                    id: tanh_button
+                    text: 'tanh'
+                    group: 7
+                CalculatorButton:
+                    id: percent_button
+                    text: '%'
+                    group: 2
+                CalculatorButton:
+                    id: exp_button
+                    text: 'exp'
+                    group: 7
+                CalculatorButton:
+                    id: asin_button
+                    text: 'asin'
+                    group: 7
+                CalculatorButton:
+                    id: acos_button
+                    text: 'acos'
+                    group: 7
+                CalculatorButton:
+                    id: atan_button
+                    text: 'atan'
+                    group: 7
+                CalculatorButton:
+                    id: root_button
+                    text: '√'
+                    group: 5
+                CalculatorButton:
+                    id: abs_button
+                    text: 'abs'
+                    group: 7
+                CalculatorButton:
+                    id: asinh_button
+                    text: 'asinh'
+                    group: 7
+                CalculatorButton:
+                    id: acosh_button
+                    text: 'acosh'
+                    group: 7
+                CalculatorButton:
+                    id: atanh_button
+                    text: 'atanh'
+                    group: 7
+                CalculatorButton:
+                    id: power_button
+                    text: '^'
+                    group: 3
+                CalculatorButton:
+                    id: log_button
+                    text: 'log'
+                    group: 7
+                CalculatorButton:
+                    id: ln_button
+                    text: 'ln'
+                    group: 7
+                CalculatorButton:
+                    id: const_p_button
+                    text: 'p'
+                    group: 6
+                CalculatorButton:
+                    id: const_e_button
+                    text: 'e'
+                    group: 6
+                CalculatorButton:
+                    id: const_t_button
+                    text: 't'
+                    group: 6
+            GridLayout:
+                cols: 4
+                CalculatorButton:
+                    id: bracket_1_button
+                    text: '('
+                    group: 8
+                CalculatorButton:
+                    id: bracket_2_button
+                    text: ')'
+                    group: 9
+                CalculatorButton:
+                    id: clear_button
+                    text: 'C'
+                CalculatorButton:
+                    id: erase_button
+                    text: 'E'
+                CalculatorButton:
+                    id: number_7_button
+                    text: '7'
+                    group: 1
+                CalculatorButton:
+                    id: number_8_button
+                    text: '8'
+                    group: 1
+                CalculatorButton:
+                    id: number_9_button
+                    text: '9'
+                    group: 1
+                CalculatorButton:
+                    id: divide_button
+                    text: '÷'
+                    group: 3
+                CalculatorButton:
+                    id: number_4_button
+                    text: '4'
+                    group: 1
+                CalculatorButton:
+                    id: number_5_button
+                    text: '5'
+                    group: 1
+                CalculatorButton:
+                    id: number_6_button
+                    text: '6'
+                    group: 1
+                CalculatorButton:
+                    id: multiply_button
+                    text: '×'
+                    group: 3
+                CalculatorButton:
+                    id: number_1_button
+                    text: '1'
+                    group: 1
+                CalculatorButton:
+                    id: number_2_button
+                    text: '2'
+                    group: 1
+                CalculatorButton:
+                    id: number_3_button
+                    text: '3'
+                    group: 1
+                CalculatorButton:
+                    id: minus_button
+                    text: '−'
+                    group: 3
+                CalculatorButton:
+                    id: comma_button
+                    text: ','
+                    group: 4
+                CalculatorButton:
+                    id: number_0_button
+                    text: '0'
+                    group: 1
+                CalculatorButton:
+                    id: equals_button
+                    text: '='
+                CalculatorButton:
+                    id: plus_button
+                    text: '+'
+                    group: 3
+
+<ColorPairLayout@BoxLayout>:
+    orientation: 'horizontal'
+
+<ColorButton@Button>:
+    border: [0, 0, 0, 0]
+    size_hint: (1, None)
+    height: dp(100)
+
+<ThemeScreen>:
+    name: 'theme_screen'
+    StandardScrollView:
+        canvas.before:
+            Color:
+                rgb: (1, 1, 1)
+            Rectangle:
+                size: self.size
+                pos: self.pos
+        FloatLayout:
+            size_hint: (1, None)
+            height: dp(1936)
+            BoxLayout:
+                orientation: 'vertical'
+                size_hint: (1, None)
+                height: dp(1938)
+                ColorPairLayout:
+                    ColorButton:
+                        background_normal: 'colors/red/50.png'
+                        background_down: 'colors/red/100.png'
+                        on_release: root.change_theme('red', 'light')
+                    ColorButton:
+                        background_normal: 'colors/red/900.png'
+                        background_down: 'colors/red/800.png'
+                        on_release: root.change_theme('red', 'dark')
+                ColorPairLayout:
+                    ColorButton:
+                        background_normal: 'colors/pink/50.png'
+                        background_down: 'colors/pink/100.png'
+                        on_release: root.change_theme('pink', 'light')
+                    ColorButton:
+                        background_normal: 'colors/pink/900.png'
+                        background_down: 'colors/pink/800.png'
+                        on_release: root.change_theme('pink', 'dark')
+                ColorPairLayout:
+                    ColorButton:
+                        background_normal: 'colors/purple/50.png'
+                        background_down: 'colors/purple/100.png'
+                        on_release: root.change_theme('purple', 'light')
+                    ColorButton:
+                        background_normal: 'colors/purple/900.png'
+                        background_down: 'colors/purple/800.png'
+                        on_release: root.change_theme('purple', 'dark')
+                ColorPairLayout:
+                    ColorButton:
+                        background_normal: 'colors/deep_purple/50.png'
+                        background_down: 'colors/deep_purple/100.png'
+                        on_release: root.change_theme('deep_purple', 'light')
+                    ColorButton:
+                        background_normal: 'colors/deep_purple/900.png'
+                        background_down: 'colors/deep_purple/800.png'
+                        on_release: root.change_theme('deep_purple', 'dark')
+                ColorPairLayout:
+                    ColorButton:
+                        background_normal: 'colors/indigo/50.png'
+                        background_down: 'colors/indigo/100.png'
+                        on_release: root.change_theme('indigo', 'light')
+                    ColorButton:
+                        background_normal: 'colors/indigo/900.png'
+                        background_down: 'colors/indigo/800.png'
+                        on_release: root.change_theme('indigo', 'dark')
+                ColorPairLayout:
+                    ColorButton:
+                        background_normal: 'colors/blue/50.png'
+                        background_down: 'colors/blue/100.png'
+                        on_release: root.change_theme('blue', 'light')
+                    ColorButton:
+                        background_normal: 'colors/blue/900.png'
+                        background_down: 'colors/blue/800.png'
+                        on_release: root.change_theme('blue', 'dark')
+                ColorPairLayout:
+                    ColorButton:
+                        background_normal: 'colors/light_blue/50.png'
+                        background_down: 'colors/light_blue/100.png'
+                        on_release: root.change_theme('light_blue', 'light')
+                    ColorButton:
+                        background_normal: 'colors/light_blue/900.png'
+                        background_down: 'colors/light_blue/800.png'
+                        on_release: root.change_theme('light_blue', 'dark')
+                ColorPairLayout:
+                    ColorButton:
+                        background_normal: 'colors/cyan/50.png'
+                        background_down: 'colors/cyan/100.png'
+                        on_release: root.change_theme('cyan', 'light')
+                    ColorButton:
+                        background_normal: 'colors/cyan/900.png'
+                        background_down: 'colors/cyan/800.png'
+                        on_release: root.change_theme('cyan', 'dark')
+                ColorPairLayout:
+                    ColorButton:
+                        background_normal: 'colors/teal/50.png'
+                        background_down: 'colors/teal/100.png'
+                        on_release: root.change_theme('teal', 'light')
+                    ColorButton:
+                        background_normal: 'colors/teal/900.png'
+                        background_down: 'colors/teal/800.png'
+                        on_release: root.change_theme('teal', 'dark')
+                ColorPairLayout:
+                    ColorButton:
+                        background_normal: 'colors/green/50.png'
+                        background_down: 'colors/green/100.png'
+                        on_release: root.change_theme('green', 'light')
+                    ColorButton:
+                        background_normal: 'colors/green/900.png'
+                        background_down: 'colors/green/800.png'
+                        on_release: root.change_theme('green', 'dark')
+                ColorPairLayout:
+                    ColorButton:
+                        background_normal: 'colors/light_green/50.png'
+                        background_down: 'colors/light_green/100.png'
+                        on_release: root.change_theme('light_green', 'light')
+                    ColorButton:
+                        background_normal: 'colors/light_green/900.png'
+                        background_down: 'colors/light_green/800.png'
+                        on_release: root.change_theme('light_green', 'dark')
+                ColorPairLayout:
+                    ColorButton:
+                        background_normal: 'colors/lime/50.png'
+                        background_down: 'colors/lime/100.png'
+                        on_release: root.change_theme('lime', 'light')
+                    ColorButton:
+                        background_normal: 'colors/lime/900.png'
+                        background_down: 'colors/lime/800.png'
+                        on_release: root.change_theme('lime', 'dark')
+                ColorPairLayout:
+                    ColorButton:
+                        background_normal: 'colors/yellow/50.png'
+                        background_down: 'colors/yellow/100.png'
+                        on_release: root.change_theme('yellow', 'light')
+                    ColorButton:
+                        background_normal: 'colors/yellow/900.png'
+                        background_down: 'colors/yellow/800.png'
+                        on_release: root.change_theme('yellow', 'dark')
+                ColorPairLayout:
+                    ColorButton:
+                        background_normal: 'colors/amber/50.png'
+                        background_down: 'colors/amber/100.png'
+                        on_release: root.change_theme('amber', 'light')
+                    ColorButton:
+                        background_normal: 'colors/amber/900.png'
+                        background_down: 'colors/amber/800.png'
+                        on_release: root.change_theme('amber', 'dark')
+                ColorPairLayout:
+                    ColorButton:
+                        background_normal: 'colors/orange/50.png'
+                        background_down: 'colors/orange/100.png'
+                        on_release: root.change_theme('orange', 'light')
+                    ColorButton:
+                        background_normal: 'colors/orange/900.png'
+                        background_down: 'colors/orange/800.png'
+                        on_release: root.change_theme('orange', 'dark')
+                ColorPairLayout:
+                    ColorButton:
+                        background_normal: 'colors/deep_orange/50.png'
+                        background_down: 'colors/deep_orange/100.png'
+                        on_release: root.change_theme('deep_orange', 'light')
+                    ColorButton:
+                        background_normal: 'colors/deep_orange/900.png'
+                        background_down: 'colors/deep_orange/800.png'
+                        on_release: root.change_theme('deep_orange', 'dark')
+                ColorPairLayout:
+                    ColorButton:
+                        background_normal: 'colors/brown/50.png'
+                        background_down: 'colors/brown/100.png'
+                        on_release: root.change_theme('brown', 'light')
+                    ColorButton:
+                        background_normal: 'colors/brown/900.png'
+                        background_down: 'colors/brown/800.png'
+                        on_release: root.change_theme('brown', 'dark')
+                ColorPairLayout:
+                    ColorButton:
+                        background_normal: 'colors/grey/50.png'
+                        background_down:'colors/grey/100.png'
+                        on_release: root.change_theme('grey', 'light')
+                    ColorButton:
+                        background_normal: 'colors/grey/900.png'
+                        background_down: 'colors/grey/800.png'
+                        on_release: root.change_theme('grey', 'dark')
+                ColorPairLayout:
+                    ColorButton:
+                        background_normal: 'colors/blue_grey/50.png'
+                        background_down: 'colors/blue_grey/100.png'
+                        on_release: root.change_theme('blue_grey', 'light')
+                    ColorButton:
+                        background_normal: 'colors/blue_grey/900.png'
+                        background_down: 'colors/blue_grey/800.png'
+                        on_release: root.change_theme('blue_grey', 'dark')
+    FloatLayout:
+        AnchorLayout:
+            anchor_x: 'left'
+            anchor_y: 'top'
+            pos: (dp(10), dp(-10))
+            Button:
+                size_hint: (None, None)
+                size: (dp(24), dp(24))
+                border: [0, 0, 0, 0]
+                background_normal: 'icons/black/background_normal/left.png'
+                background_down: 'icons/black/background_down/left.png'
+                on_release: root.manager.current = 'calculator_screen'
+
+<LanguageButton@Button>:
+    font_size: sp(22)
+    font_name: 'fonts/nunito_regular.ttf'
+    size_hint: (1, None)
+    height: dp(50)
+    border: [0, 0, 0, 0]
+
+<LanguageScreen>:
+    name: 'language_screen'
+    StandardLayout:
+        id: color_layout
+        canvas.before:
+            Rectangle:
+                size: self.size
+                pos: self.pos
+                source: self.color
+    AnchorLayout:
+        anchor_x: 'center'
+        anchor_y: 'center'
+        StandardScrollView:
+            id: language_scroll_view
+            BoxLayout:
+                id: language_box_layout
+                size_hint: (1, None)
+                height: dp(1250)
+                orientation: 'vertical'
+                LanguageButton:
+                    text: 'Português'
+                    on_release: root.set_language(self.text)
+                LanguageButton:
+                    text: 'Español'
+                    on_release: root.set_language(self.text)
+                LanguageButton:
+                    text: 'English'
+                    on_release: root.set_language(self.text)
+                LanguageButton:
+                    text: 'Français'
+                    on_release: root.set_language(self.text)
+                LanguageButton:
+                    text: 'Nederlands'
+                    on_release: root.set_language(self.text)
+                LanguageButton:
+                    text: 'Deutsch'
+                    on_release: root.set_language(self.text)
+                LanguageButton:
+                    text: 'Italiano'
+                    on_release: root.set_language(self.text)
+                LanguageButton:
+                    text: 'Dansk'
+                    on_release: root.set_language(self.text)
+                LanguageButton:
+                    text: 'Svenska'
+                    on_release: root.set_language(self.text)
+                LanguageButton:
+                    text: 'Česky'
+                    on_release: root.set_language(self.text)
+                LanguageButton:
+                    text: 'Slovenski'
+                    on_release: root.set_language(self.text)
+                LanguageButton:
+                    text: 'Polski'
+                    on_release: root.set_language(self.text)
+                LanguageButton:
+                    text: 'Magyar'
+                    on_release: root.set_language(self.text)
+                LanguageButton:
+                    text: 'Slovenská'
+                    on_release: root.set_language(self.text)
+                LanguageButton:
+                    text: 'Ελληνική'
+                    font_name: 'fonts/open_sans_regular.ttf'
+                    on_release: root.set_language(self.text)
+                LanguageButton:
+                    text: 'Românesc'
+                    on_release: root.set_language(self.text)
+                LanguageButton:
+                    text: 'Suomalainen'
+                    on_release: root.set_language(self.text)
+                LanguageButton:
+                    text: 'Latviešu'
+                    on_release: root.set_language(self.text)
+                LanguageButton:
+                    text: 'Lietuviškas'
+                    on_release: root.set_language(self.text)
+                LanguageButton:
+                    text: 'Eesti'
+                    on_release: root.set_language(self.text)
+                LanguageButton:
+                    text: 'Українська'
+                    on_release: root.set_language(self.text)
+                LanguageButton:
+                    text: 'Български'
+                    on_release: root.set_language(self.text)
+                LanguageButton:
+                    text: 'Русский'
+                    on_release: root.set_language(self.text)
+                LanguageButton:
+                    text: '中国'
+                    font_name: 'fonts/zcool_xiaowei_regular.ttf'
+                    on_release: root.set_language(self.text)
+                LanguageButton:
+                    text: '日本語'
+                    font_name: 'fonts/shippori_mincho_medium.ttf'
+                    on_release: root.set_language(self.text)
+                FloatLayout:
+                    size_hint: (1, None)
+                    height: dp(2)
+    FloatLayout:
+        AnchorLayout:
+            anchor_x: 'left'
+            anchor_y: 'top'
+            pos: (dp(10), dp(-10))
+            StandardButton:
+                icon_used: 'left'
+                on_release: root.manager.current = 'calculator_screen'
