@@ -587,8 +587,8 @@ class CalculatorEngine(App):
                 result_str = ''
                 for item in items:
                     result_str += item
-                    result_str += '−'
-            if result_str[-1] == '−':
+                    result_str += '-'
+            if result_str[-1] == '-':
                 result_str = result_str[:-1]
             if 'e' in list(result_str):
                 result_str = convert_e_type_to_decimal(result_str)
@@ -644,7 +644,7 @@ class CalculatorEngine(App):
 
 
 def convert_e_type_to_decimal(result_str):
-    result_items = result_str.split('−')
+    result_items = result_str.split('-')
     result_str = ''
     size = int(result_items[-1]) - 1
     result_is_less_than_zero = False
@@ -657,7 +657,7 @@ def convert_e_type_to_decimal(result_str):
         value = value[:-1]
     iteration = 0
     if result_is_less_than_zero:
-        result_str += '−'
+        result_str += '-'
     result_str += '0,'
     while iteration < size:
         result_str += '0'
